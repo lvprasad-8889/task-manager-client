@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import useStore from "../../store/useStore";
 import TaskDetailsModal from "./TaskDetailsModal";
+import AddTaskModal from "./AddTaskModal";
 
 const TaskCalendarView = ({ tasks, loading }) => {
   const [selectedTask, setSelectedTask] = useState(null);
@@ -9,6 +10,9 @@ const TaskCalendarView = ({ tasks, loading }) => {
 
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedDate, setSelectedDate] = useState();
+  const [selectDateInCalendar, setSelectDateInCalendar] = useState();
+
+  selectDateInCalendar && selectDateInCalendar.setDate(selectDateInCalendar.getDate() + 1);
 
   const handleMoreClick = (e, date) => {
     e.stopPropagation(); // Prevent calendar clicks
@@ -103,7 +107,6 @@ const TaskCalendarView = ({ tasks, loading }) => {
     year: "numeric",
   });
 
-
   return (
     <>
       <div className="calendar-container mb-4">
@@ -149,6 +152,11 @@ const TaskCalendarView = ({ tasks, loading }) => {
                       className={`calendar-day ${
                         !dayObj.day ? "calendar-day-empty" : ""
                       } ${isToday ? "calendar-day-today" : ""}`}
+                      role={dayObj.day ? "button" : ""}
+                      onClick={() => {
+                        dayObj.day &&
+                          setSelectDateInCalendar(new Date(dayObj.date));
+                      }}
                     >
                       {dayObj.day && (
                         <>
@@ -243,6 +251,15 @@ const TaskCalendarView = ({ tasks, loading }) => {
         <TaskDetailsModal
           task={selectedTask}
           onHide={() => setSelectedTask(null)}
+          date={selectDateInCalendar}
+        />
+      )}
+
+      {selectDateInCalendar && (
+        <AddTaskModal
+          show={true}
+          onHide={() => setSelectDateInCalendar()}
+          date={selectDateInCalendar}
         />
       )}
 

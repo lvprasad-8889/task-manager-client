@@ -27,7 +27,7 @@ const Navbar = ({ userName }) => {
             <span className="navbar-toggler-icon"></span>
           </button>
 
-          <div className="d-md-none">
+          <div className="d-md-none me-1">
             <NotificationDropdown></NotificationDropdown>{" "}
           </div>
         </div>

@@ -2,11 +2,11 @@ import { useState } from "react";
 import useStore from "../../store/useStore";
 import TagInput from "./TagInput";
 
-const AddTaskModal = ({ show, onHide }) => {
+const AddTaskModal = ({ show, onHide, date = new Date() }) => {
   const { addTask, categories } = useStore();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [dueDate, setDueDate] = useState("");
+  const [dueDate, setDueDate] = useState(date.toISOString().split("T")[0]);
   const [priority, setPriority] = useState("medium");
   const [category, setCategory] = useState("");
   const [tags, setTags] = useState([]);

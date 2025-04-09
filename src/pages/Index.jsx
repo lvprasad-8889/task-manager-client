@@ -16,8 +16,6 @@ const Index = () => {
   useEffect(() => {
     if (!user.id || !isAuthenticated) return;
 
-    console.log(!user.id || !isAuthenticated);
-
     // Listen to user's notification channel
     socket.on(`notification:${user.id}`, (notification) => {
       setUserNotification(notification)

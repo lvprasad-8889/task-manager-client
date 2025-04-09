@@ -26,7 +26,16 @@ const useStore = create((set, get) => ({
 
   notifications: [],
 
-  apiUrl: process.env.NODE_ENV === 'development' ? "http://localhost:3000/api" : "https://task-managers-server-12a74ec3356d.herokuapp.com/api",
+  apiUrl:
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:3000/api"
+      : "https://task-managers-server-12a74ec3356d.herokuapp.com/api",
+
+  setTaskStats: (stats) => {
+    set({
+      taskStats: {...stats},
+    });
+  },
 
   // Set display format
   setDisplayFormat: (format) => set({ displayFormat: format }),
@@ -138,14 +147,13 @@ const useStore = create((set, get) => ({
 
       const data = await response.json();
 
-      console.log("due tasks are", data.tasks.filter((task) => task.dueDate.getTime() < new Date().getTime()));
       set({
         tasks: data.tasks,
         taskStats: data.stats || {
           total: data.tasks.length,
           completed: data.tasks.filter((task) => task.completed).length,
           pending: data.tasks.filter((task) => !task.completed).length,
-          overdue: data.tasks.filter((task) => task.dueDate.getTime() < new Date().getTime()).length, // Will calculate this on the frontend if not provided
+          overdue: 0,
         },
         isLoadingTasks: false,
       });
@@ -175,8 +183,9 @@ const useStore = create((set, get) => ({
       }
 
       const newTask = await response.json();
+      let newTasks = [newTask, ...state.tasks];
       set((state) => ({
-        tasks: [newTask, ...state.tasks],
+        tasks: newTasks,
         taskStats: {
           ...state.taskStats,
           total: state.taskStats.total + 1,
@@ -216,22 +225,23 @@ const useStore = create((set, get) => ({
         const newTasks = state.tasks.map((task) =>
           task._id === taskId ? updatedTask : task
         );
-
         // Update stats if completion status changed
-        const taskStats = { ...state.taskStats };
-        if (oldTask.completed !== updatedTask.completed) {
-          if (updatedTask.completed) {
-            taskStats.completed++;
-            taskStats.pending--;
-          } else {
-            taskStats.completed--;
-            taskStats.pending++;
-          }
-        }
+        // const taskStats = {
+        //   ...state.taskStats,
+        // };
+        // if (oldTask.completed !== updatedTask.completed) {
+        //   if (updatedTask.completed) {
+        //     taskStats.completed++;
+        //     taskStats.pending--;
+        //   } else {
+        //     taskStats.completed--;
+        //     taskStats.pending++;
+        //   }
+        // }
 
         return {
           tasks: newTasks,
-          taskStats,
+          // taskStats,
         };
       });
     } catch (error) {
@@ -452,7 +462,7 @@ const useStore = create((set, get) => ({
         if (notificationId === item._id) {
           return {
             ...item,
-            unread: false
+            unread: false,
           };
         }
         return item;
@@ -461,8 +471,7 @@ const useStore = create((set, get) => ({
       set((state) => ({
         notifications: [...data],
       }));
-    } catch (error) {
-    }
+    } catch (error) {}
   },
 
   removeUserNotification: async (notificationId) => {
@@ -485,13 +494,14 @@ const useStore = create((set, get) => ({
         throw new Error("Failed to fetch tasks");
       }
 
-      let data = get().notifications.filter((item) => item._id !== notificationId);
+      let data = get().notifications.filter(
+        (item) => item._id !== notificationId
+      );
 
       set((state) => ({
         notifications: [...data],
       }));
-    } catch (error) {
-    }
+    } catch (error) {}
   },
 
   setUserNotification: (notification) => {

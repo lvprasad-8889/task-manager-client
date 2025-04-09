@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-const TagInput = ({fetchTagsToParent}) => {
-  const [tags, setTags] = useState([]);
+const TagInput = ({fetchTagsToParent, defaultTags = []}) => {
+  const [tags, setTags] = useState(defaultTags ? defaultTags : []);
   const [input, setInput] = useState('');
 
   const handleKeyDown = (e) => {

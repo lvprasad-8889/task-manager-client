@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import useStore from "../../store/useStore";
+import TagInput from "./TagInput";
 
 const TaskDetailsModal = ({ task, onHide }) => {
   const { updateTask, deleteTask, categories } = useStore();
@@ -24,6 +25,13 @@ const TaskDetailsModal = ({ task, onHide }) => {
   const handleSave = () => {
     updateTask(task._id, editedTask);
     setIsEditing(false);
+  };
+
+  const fetchTagsToParent = (tag) => {
+    setEditedTask({
+      ...editedTask,
+      tags: [...editedTask.tags, tag],
+    });
   };
 
   const handleDelete = () => {
@@ -143,6 +151,13 @@ const TaskDetailsModal = ({ task, onHide }) => {
                   </select>
                 </div>
 
+                <div className="mb-3">
+                  <TagInput
+                    fetchTagsToParent={fetchTagsToParent}
+                    defaultTags={editedTask.tags}
+                  ></TagInput>
+                </div>
+
                 <div className="form-check mb-3">
                   <input
                     type="checkbox"
@@ -241,7 +256,8 @@ const TaskDetailsModal = ({ task, onHide }) => {
                 <button
                   type="button"
                   className="btn btn-primary"
-                  onClick={() => {handleSave()
+                  onClick={() => {
+                    handleSave();
                     onHide();
                   }}
                 >

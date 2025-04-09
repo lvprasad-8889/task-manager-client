@@ -137,13 +137,15 @@ const useStore = create((set, get) => ({
       }
 
       const data = await response.json();
+
+      console.log("due tasks are", data.tasks.filter((task) => task.dueDate.getTime() < new Date().getTime()));
       set({
         tasks: data.tasks,
         taskStats: data.stats || {
           total: data.tasks.length,
           completed: data.tasks.filter((task) => task.completed).length,
           pending: data.tasks.filter((task) => !task.completed).length,
-          overdue: 0, // Will calculate this on the frontend if not provided
+          overdue: data.tasks.filter((task) => task.dueDate.getTime() < new Date().getTime()).length, // Will calculate this on the frontend if not provided
         },
         isLoadingTasks: false,
       });

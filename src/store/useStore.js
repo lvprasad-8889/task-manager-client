@@ -26,7 +26,7 @@ const useStore = create((set, get) => ({
 
   notifications: [],
 
-  apiUrl: process.env.NODE_ENV !== 'development' ? "http://localhost:3000/api" : "https://task-managers-server-12a74ec3356d.herokuapp.com/api",
+  apiUrl: process.env.NODE_ENV === 'development' ? "http://localhost:3000/api" : "https://task-managers-server-12a74ec3356d.herokuapp.com/api",
 
   // Set display format
   setDisplayFormat: (format) => set({ displayFormat: format }),

@@ -32,55 +32,14 @@ export function getTimeAgo(pastDate) {
 }
 
 const NotificationDropdown = () => {
-  // const initialNotifications = [
-  //   {
-  //     id: 1,
-  //     text: "New message from John",
-  //     title: "hello one",
-  //     unread: true,
-  //     eventType: "Task Created",
-  //     updatedAt: "2025-04-08T19:10:45.123Z",
-  //   },
-  //   {
-  //     id: 2,
-  //     text: " Design update so can you do th ework",
-  //     title: "hello two",
-  //     unread: true,
-  //     eventType: "Task Updated",
-  //     updatedAt: "2025-04-08T15:30:45.123Z",
-  //   },
-  //   {
-  //     id: 3,
-  //     text: "Server maintenance at 2AM",
-  //     title: "hello three",
-  //     unread: true,
-  //     eventType: "Task Deleted",
-  //     updatedAt: "2025-04-08T15:30:45.123Z",
-  //   },
-  //   {
-  //     id: 4,
-  //     text: "Server maintenance at 2AM",
-  //     title: "hello three",
-  //     unread: true,
-  //     eventType: "Task Due soon",
-  //     updatedAt: "2025-04-08T15:30:45.123Z",
-  //   },
-  //   {
-  //     id: 5,
-  //     text: "Server maintenance at 2AM",
-  //     title: "hello three",
-  //     unread: true,
-  //     eventType: "Task Completed",
-  //     updatedAt: "2025-04-08T15:30:45.123Z",
-  //   },
-  // ];
-
   let {
     notifications,
     getUserNotifications,
     readAllUserNotifications,
     readUserNotification,
     removeUserNotification,
+    setUserNotification,
+    isAuthenticated,
   } = useStore();
 
   const markAllAsRead = () => {
@@ -155,14 +114,14 @@ const NotificationDropdown = () => {
                       >
                         {getTimeAgo(n.updatedAt)}
                         <div className="d-flex gap-3 align-items-center">
-                          {
-                            n.unread && <i
-                            className="fas fa-check"
-                            role="button"
-                            onClick={() => readUserNotification(n._id)}
-                            title="Mark this notification as read"
-                          ></i>
-                          }
+                          {n.unread && (
+                            <i
+                              className="fas fa-check"
+                              role="button"
+                              onClick={() => readUserNotification(n._id)}
+                              title="Mark this notification as read"
+                            ></i>
+                          )}
                           <i
                             className="fas fa-times"
                             role="button"

@@ -3,28 +3,29 @@ import useStore from "../store/useStore";
 import Login from "../components/auth/Login";
 import Register from "../components/auth/Register";
 import Dashboard from "../components/dashboard/Dashboard";
-import socket from "../store/socket";
-
-import { Link } from "react-router-dom";
+import { io } from "socket.io-client";
 
 const Index = () => {
   const { isAuthenticated, user, setUserNotification } = useStore();
-
+``
   const [showLogin, setShowLogin] = useState(true);
 
-  
   useEffect(() => {
-    if (!user.id || !isAuthenticated) return;
-
-    // Listen to user's notification channel
-    socket.on(`notification:${user.id}`, (notification) => {
-      setUserNotification(notification)
-    });
-
-    return () => {
-      socket.off(`notification:${user.id}`);
-    };
-  }, []);
+    if (isAuthenticated) {
+      let prod = process.env.NODE_ENV !== "development";
+      let socket = io(
+        prod
+          ? "wss://task-managers-server-12a74ec3356d.herokuapp.com/"
+          : "http://localhost:3000"
+      ); 
+      socket.on(`notification:${user.id}`, (notification) => {
+        setUserNotification(notification);
+      });
+      return () => {
+        socket.off(`notification:${user.id}`);
+      };
+    }
+  }, [isAuthenticated]);
 
   // Render based on authentication state
   if (!isAuthenticated) {
@@ -76,7 +77,6 @@ const Index = () => {
       </div>
     );
   }
-
 
   return <Dashboard />;
 };

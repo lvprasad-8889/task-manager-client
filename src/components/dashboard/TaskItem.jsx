@@ -1,13 +1,16 @@
+import { useState } from "react";
 import useStore from "../../store/useStore";
-import Wraptags from './WrapTags';
-
+import Wraptags from "./WrapTags";
 
 const TaskItem = ({ task, onSelect }) => {
   const { updateTask, categories } = useStore();
+  const [loading, setLoading] = useState(false);
 
-  const handleToggleComplete = (e) => {
+  const handleToggleComplete = async (e) => {
     e.stopPropagation();
-    updateTask(task._id, { completed: !task.completed });
+    setLoading(true);
+    await updateTask(task._id, { completed: !task.completed });
+    setLoading(false);
   };
 
   const getPriorityBadgeClass = (priority) => {
@@ -49,15 +52,19 @@ const TaskItem = ({ task, onSelect }) => {
     >
       <div className="d-flex w-100 justify-content-between align-items-center ">
         <div className="d-flex align-items-center me-2">
-          <div className="form-check">
-            <input
-              className="form-check-input"
-              type="checkbox"
-              checked={task.completed}
-              onChange={handleToggleComplete}
-              onClick={(e) => e.stopPropagation()}
-            />
-          </div>
+          {loading ? (
+            <div className="spinner-border text-primary spinner-border-sm"></div>
+          ) : (
+            <div className="form-check">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                checked={task.completed}
+                onChange={handleToggleComplete}
+                onClick={(e) => e.stopPropagation()}
+              />
+            </div>
+          )}
 
           <div className="ms-2">
             <h5
@@ -113,7 +120,11 @@ const TaskItem = ({ task, onSelect }) => {
       </div>
 
       {task.description && (
-        <p className={`mb-0 mt-2 text-break ${task.completed ? "text-muted" : ""}`}>
+        <p
+          className={`mb-0 mt-2 text-break ${
+            task.completed ? "text-muted" : ""
+          }`}
+        >
           {task.description.length > 100
             ? `${task.description.substring(0, 100)}...`
             : task.description}

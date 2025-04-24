@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useStore from '../../store/useStore';
 import TaskItem from './TaskItem';
 import TaskDetailsModal from './TaskDetailsModal';

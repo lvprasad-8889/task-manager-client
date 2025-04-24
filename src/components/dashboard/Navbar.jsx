@@ -4,7 +4,10 @@ import Sidebar from "./Sidebar";
 import NotificationDropdown from "./NotificationDropdown";
 
 const Navbar = ({ userName }) => {
-  const { logout, user } = useStore();
+  const { logout, user, isAuthenticated } = useStore();
+
+
+
 
   return (
     <nav className="navbar navbar-expand-md navbar-dark bg-primary">

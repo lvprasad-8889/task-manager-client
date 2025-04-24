@@ -10,8 +10,9 @@ const AddTaskModal = ({ show, onHide, date = new Date() }) => {
   const [priority, setPriority] = useState("medium");
   const [category, setCategory] = useState("");
   const [tags, setTags] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (title.trim()) {
@@ -31,7 +32,9 @@ const AddTaskModal = ({ show, onHide, date = new Date() }) => {
         taskData.category = category;
       }
 
-      addTask(taskData);
+      setLoading(true);
+      await addTask(taskData);
+      setLoading(false);
       resetForm();
       onHide();
     }
@@ -158,9 +161,16 @@ const AddTaskModal = ({ show, onHide, date = new Date() }) => {
                 >
                   Cancel
                 </button>
-                <button type="submit" className="btn btn-primary">
-                  Save Task
-                </button>
+
+                {loading ? (
+                  <div className=" mx-4">
+                    <div className="spinner-border text-primary"></div>
+                  </div>
+                ) : (
+                  <button type="submit" className="btn btn-primary">
+                    Save Task
+                  </button>
+                )}
               </div>
             </form>
           </div>

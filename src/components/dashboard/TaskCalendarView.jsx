@@ -250,12 +250,12 @@ const TaskCalendarView = ({ tasks, loading }) => {
       {selectedTask && (
         <TaskDetailsModal
           task={selectedTask}
-          onHide={() => setSelectedTask(null)}
+          onHide={() => {setSelectedTask(null); setSelectDateInCalendar()}}
           date={selectDateInCalendar}
         />
       )}
 
-      {selectDateInCalendar && (
+      {selectDateInCalendar && !selectedTask && (
         <AddTaskModal
           show={true}
           onHide={() => setSelectDateInCalendar()}

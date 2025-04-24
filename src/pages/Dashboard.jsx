@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useStore } from '../store/useStore';
+import socket from '../store/socket';
 
 const Dashboard = () => {
-  const { user } = useStore();
+  const { user, isAuthenticated } = useStore();
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState({ title: '', description: '' });
 
@@ -26,6 +27,7 @@ const Dashboard = () => {
   useEffect(() => {
     fetchTasks();
   }, []);
+
 
   return (
     <div className="container mt-4">

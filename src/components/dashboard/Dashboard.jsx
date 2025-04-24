@@ -5,11 +5,14 @@ import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 import TasksContainer from './TasksContainer';
 
+import socket from '../../store/socket';
+
 const Dashboard = () => {
   const { 
     fetchTasks, 
     fetchCategories,
-    user 
+    user ,
+    isAuthenticated
   } = useStore();
   
   // Fetch data on component mount
@@ -17,6 +20,8 @@ const Dashboard = () => {
     fetchTasks();
     fetchCategories();
   }, [fetchTasks, fetchCategories]);
+
+
   
   return (
     <div className="dashboard-layout">

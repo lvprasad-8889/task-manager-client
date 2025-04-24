@@ -5,12 +5,15 @@ const AddCategoryModal = ({ show, onHide }) => {
   const { addCategory } = useStore();
   const [name, setName] = useState("");
   const [color, setColor] = useState("#4a6fa5");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (name.trim()) {
-      addCategory({ name, color });
+      setLoading(true);
+      await addCategory({ name, color });
+      setLoading(false);
       setName("");
       setColor("#4a6fa5");
       onHide();
@@ -73,9 +76,15 @@ const AddCategoryModal = ({ show, onHide }) => {
                 >
                   Cancel
                 </button>
-                <button type="submit" className="btn btn-primary">
-                  Save Category
-                </button>
+                {loading ? (
+                  <div className=" mx-4">
+                    <div className="spinner-border text-primary"></div>
+                  </div>
+                ) : (
+                  <button type="submit" className="btn btn-primary">
+                    Save Category
+                  </button>
+                )}
               </div>
             </form>
           </div>

@@ -7,6 +7,8 @@ const TaskDetailsModal = ({ task, onHide }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTask, setEditedTask] = useState({ ...task });
 
+  const [deleting, setDeleting] = useState(false);
+
   // Update local state when task changes
   useEffect(() => {
     setEditedTask({ ...task });
@@ -34,9 +36,11 @@ const TaskDetailsModal = ({ task, onHide }) => {
     });
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (window.confirm("Are you sure you want to delete this task?")) {
-      deleteTask(task._id);
+      setDeleting(true);
+      await deleteTask(task._id);
+      setDeleting(false);
       onHide();
     }
   };
@@ -266,13 +270,19 @@ const TaskDetailsModal = ({ task, onHide }) => {
               </>
             ) : (
               <>
-                <button
-                  type="button"
-                  className="btn btn-danger me-auto"
-                  onClick={handleDelete}
-                >
-                  <i className="fas fa-trash-alt me-1"></i> Delete
-                </button>
+                {deleting ? (
+                  <div className="me-auto">
+                    <div className="spinner-border text-danger"></div>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    className="btn btn-danger me-auto"
+                    onClick={handleDelete}
+                  >
+                    <i className="fas fa-trash-alt me-1"></i> Delete
+                  </button>
+                )}
                 <button
                   type="button"
                   className="btn btn-secondary"

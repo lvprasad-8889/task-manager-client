@@ -4,7 +4,7 @@ const useStore = create((set, get) => ({
   // User state
   user: JSON.parse(localStorage.getItem("user") || "{}"),
   token: localStorage.getItem("token"),
-  isAuthenticated: !!localStorage.getItem("token"),
+  isAuthenticated: false,
 
   // Tasks state
   tasks: [],
@@ -26,14 +26,50 @@ const useStore = create((set, get) => ({
 
   notifications: [],
 
+  loading: false,
+
   apiUrl:
     process.env.NODE_ENV === "development"
       ? "http://localhost:3000/api"
       : "https://task-managers-server-12a74ec3356d.herokuapp.com/api",
 
+  validateUserCredentials: async () => {
+    if (get().user && get().token) {
+      let email = get().user.email;
+      try {
+        set({ loginError: null });
+        const API_URL = get().apiUrl;
+        const response = await fetch(`${API_URL}/auth/validate`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${get().token}`,
+          },
+          body: JSON.stringify({ email }),
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message || "Please Login again");
+        }
+
+        const data = await response.json();
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        set({
+          user: data.user,
+          token: data.token,
+          isAuthenticated: true,
+        });
+      } catch (error) {
+        console.log("error in validating credentials", error);
+      }
+    }
+  },
+
   setTaskStats: (stats) => {
     set({
-      taskStats: {...stats},
+      taskStats: { ...stats },
     });
   },
 
@@ -43,7 +79,6 @@ const useStore = create((set, get) => ({
   // Login action
   login: async (email, password) => {
     try {
-      console.log();
       set({ loginError: null });
       const API_URL = get().apiUrl;
       const response = await fetch(`${API_URL}/auth/login`, {
@@ -183,9 +218,9 @@ const useStore = create((set, get) => ({
       }
 
       const newTask = await response.json();
-      let newTasks = [newTask, ...state.tasks];
+      let newTasks = [newTask, ...get().tasks];
       set((state) => ({
-        tasks: newTasks,
+        tasks: [...newTasks],
         taskStats: {
           ...state.taskStats,
           total: state.taskStats.total + 1,
@@ -422,7 +457,6 @@ const useStore = create((set, get) => ({
         throw new Error("Failed to fetch tasks");
       }
 
-      console.log("from store", get().notifications);
       let data = get().notifications.map((item) => {
         return {
           ...item,

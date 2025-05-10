@@ -31,7 +31,7 @@ const useStore = create((set, get) => ({
   apiUrl:
     process.env.NODE_ENV === "development"
       ? "http://localhost:3000/api"
-      : "https://task-managers-server-12a74ec3356d.herokuapp.com/api",
+      : "https://task-manager-server-fg2v.onrender.com/api",
 
   validateUserCredentials: async () => {
     if (get().user && get().token) {
